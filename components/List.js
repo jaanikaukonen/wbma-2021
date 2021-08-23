@@ -1,5 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
+
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const mediaArray = [
@@ -32,28 +31,25 @@ const mediaArray = [
   }
 ];
 
-const App = () => {
+const List = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={mediaArray}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity style={styles.row}>
-              <Image
-                style={styles.image}
-                source={{ uri: item.thumbnails.w160 }}
-              />
-              <View style={styles.textbox}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.paragraph}>{item.description}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
-
-    </SafeAreaView>
+    <FlatList
+      data={mediaArray}
+      renderItem={({ item }) => {
+        return (
+          <TouchableOpacity style={styles.row}>
+            <Image
+              style={styles.image}
+              source={{ uri: item.thumbnails.w160 }}
+            />
+            <View style={styles.textbox}>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.paragraph}>{item.description}</Text>
+            </View>
+          </TouchableOpacity>
+        );
+      }}
+    />
   );
 };
 
@@ -87,5 +83,3 @@ const styles = StyleSheet.create({
     height: 300
   }
 });
-
-export default App;
