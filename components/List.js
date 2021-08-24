@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ListItem from "../components/ListItem";
+import { baseUrl } from "../utils/variables";
 
 const List = (props) => {
   const [mediaArray, setMediaArray] = useState([]);
-  const url = "https://raw.githubusercontent.com/mattpe/wbma/master/docs/assets/test.json";
 
   useEffect(() => {
     const loadMedia = async () => {
       try {
-        const response = await fetch(url);
-        const json = await response.json();
-        setMediaArray(json);
+        const response = await fetch(baseUrl + "media");
+        const mediaWithoutThumbnails = await response.json();
+
+        const allData = mediaWithoutThumbnails.map(async (item) => {
+          const response = await fetch(baseUrl + "media/" + item.file_id);
+          const media = await response.json();
+          return media;
+        });
+
+        setMediaArray(await Promise.all(allData));
+
       } catch (e) {
         console.log(e.message);
       }
@@ -19,7 +27,7 @@ const List = (props) => {
     loadMedia();
   }, []);
 
-  console.log(mediaArray);
+  console.log("List: mediaArray ", mediaArray);
   return (
     <FlatList
       data={mediaArray}
