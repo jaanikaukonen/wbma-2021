@@ -1,5 +1,6 @@
-
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import ListItem from '../components/ListItem'
 
 const mediaArray = [
   {
@@ -31,55 +32,14 @@ const mediaArray = [
   }
 ];
 
-const List = () => {
+const List = (props) => {
   return (
     <FlatList
       data={mediaArray}
-      renderItem={({ item }) => {
-        return (
-          <TouchableOpacity style={styles.row}>
-            <Image
-              style={styles.image}
-              source={{ uri: item.thumbnails.w160 }}
-            />
-            <View style={styles.textbox}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.paragraph}>{item.description}</Text>
-            </View>
-          </TouchableOpacity>
-        );
-      }}
+      renderItem={({item}) => <ListItem singleMedia={item} />}
     />
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff"
-  },
-  textbox: {
-    flex: 5
-  },
-  image: {
-    flex: 4,
-    height: "100%",
-    margin: 5
-  },
-  title: {
-    fontWeight: "bold"
-  },
-  paragraph: {
-    fontSize: 15
-  },
-  row: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    marginBottom: 2,
-    padding: 10,
-    backgroundColor: "#afafaf",
-    height: 300
-  }
-});
+export default List;
+
