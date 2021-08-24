@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { uploadsUrl } from "../utils/variables";
 
-const ListItem = ({singleMedia}) => {
+const ListItem = ({ singleMedia }) => {
   return (
     <TouchableOpacity style={styles.row}>
       <Image
@@ -19,7 +19,7 @@ const ListItem = ({singleMedia}) => {
 };
 
 ListItem.propTypes = {
-  singleMedia: PropTypes.object,
+  singleMedia: PropTypes.object
 };
 
 const styles = StyleSheet.create({
