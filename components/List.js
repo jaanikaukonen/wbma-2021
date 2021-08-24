@@ -13,7 +13,7 @@ const List = (props) => {
         const json = await response.json();
         setMediaArray(json);
       } catch (e) {
-        console.log(e.message());
+        console.log(e.message);
       }
     };
     loadMedia();
