@@ -8,9 +8,13 @@ const List = (props) => {
 
   useEffect(() => {
     const loadMedia = async () => {
-      const response = await fetch(url);
-      const json = await response.json();
-      setMediaArray(json);
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
+        setMediaArray(json);
+      } catch (e) {
+        console.log(e.message());
+      }
     };
     loadMedia();
   }, []);
