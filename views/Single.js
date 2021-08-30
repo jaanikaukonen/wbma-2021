@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, SafeAreaView, Text, Image } from "react-native";
 import PropTypes from "prop-types";
 import { uploadsUrl } from "../utils/variables";
+import { format } from "date-fns";
 
 const Single = ({ route }) => {
   const {params} = route;
@@ -13,6 +14,7 @@ const Single = ({ route }) => {
       />
       <Text>{params.title}</Text>
       <Text>{params.description}</Text>
+      <Text>{format(new Date(params.time_added), 'EEEE dd MMMM yyyy')}</Text>
     </SafeAreaView>
   );
 };
