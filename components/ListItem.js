@@ -10,7 +10,7 @@ const ListItem = ({ singleMedia }) => {
         style={styles.image}
         source={{ uri: uploadsUrl + singleMedia.thumbnails?.w160 }}
       />
-      <View style={styles.textbox}>
+      <View style={styles.textBox}>
         <Text style={styles.title}>{singleMedia.title}</Text>
         <Text style={styles.paragraph}>{singleMedia.description}</Text>
       </View>
@@ -23,13 +23,15 @@ ListItem.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  textbox: {
-    flex: 5
+  textBox: {
+    flex: 5,
+    alignSelf: 'flex-start',
   },
   image: {
     flex: 4,
     height: "100%",
-    margin: 5
+    margin: 5,
+    borderRadius: 10,
   },
   title: {
     fontWeight: "bold"
@@ -38,14 +40,13 @@ const styles = StyleSheet.create({
     fontSize: 15
   },
   row: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
     marginBottom: 2,
     padding: 10,
     backgroundColor: "#afafaf",
-    height: 300
+    height: 100
   }
 });
 

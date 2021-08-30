@@ -1,11 +1,22 @@
 import React from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import {  ImageBackground, SafeAreaView, StyleSheet, View } from "react-native";
 import List from "./components/List";
+
+const image = { uri: "https://reactjs.org/logo-og.png" };
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <List />
+        <View style={styles.headerImg}>
+          <ImageBackground
+            source={image}
+            resizeMode={"cover"}
+            style={styles.imageArea}
+          />
+        </View>
+        <View style={styles.feed}>
+          <List />
+        </View>
     </SafeAreaView>
   );
 };
@@ -13,7 +24,19 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff"
+    backgroundColor: "black"
+  },
+
+  headerImg: {
+    flex: 2
+  },
+
+  imageArea: {
+    flex: 1
+  },
+
+  feed: {
+    flex: 3
   }
 });
 
