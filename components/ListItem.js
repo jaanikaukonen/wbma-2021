@@ -8,7 +8,7 @@ const ListItem = ({ singleMedia, navigation }) => {
     <TouchableOpacity
       style={styles.row}
       onPress={() => {
-        navigation.navigate('Single');
+        navigation.navigate("Single", singleMedia);
       }}
     >
       <Image
@@ -25,19 +25,19 @@ const ListItem = ({ singleMedia, navigation }) => {
 
 ListItem.propTypes = {
   singleMedia: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({
   textBox: {
     flex: 5,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start"
   },
   image: {
     flex: 4,
     height: "100%",
     margin: 5,
-    borderRadius: 10,
+    borderRadius: 10
   },
   title: {
     fontWeight: "bold"
