@@ -3,9 +3,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { uploadsUrl } from "../utils/variables";
 
-const ListItem = ({ singleMedia }) => {
+const ListItem = ({ singleMedia, navigation }) => {
   return (
-    <TouchableOpacity style={styles.row}>
+    <TouchableOpacity
+      style={styles.row}
+      onPress={() => {
+        navigation.navigate('Single');
+      }}
+    >
       <Image
         style={styles.image}
         source={{ uri: uploadsUrl + singleMedia.thumbnails?.w160 }}
@@ -19,7 +24,8 @@ const ListItem = ({ singleMedia }) => {
 };
 
 ListItem.propTypes = {
-  singleMedia: PropTypes.object
+  singleMedia: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 const styles = StyleSheet.create({
