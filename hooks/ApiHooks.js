@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { baseUrl } from "../utils/variables";
 import { doFetch } from "../utils/http";
 
-
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
 
@@ -35,7 +34,59 @@ const useMedia = () => {
     }
   };
 
-  return { mediaArray, loadMedia, loadSingleMedia };
+  return { loadMedia, loadSingleMedia };
 };
 
-export { useMedia };
+const useLogin = () => {
+  const login = async (userCredentials) => {
+    const requestOptions = {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: userCredentials,
+    };
+    try {
+      return await doFetch(baseUrl + 'login', requestOptions);
+    } catch (e) {
+      console.log("Login error", e.message);
+    }
+  };
+  return { login };
+};
+
+const useUser = () => {
+  const checkToken = async (token) => {
+    const requestOptions = {
+      headers: {
+        "x-access-token": token
+      }
+    };
+    try {
+      return doFetch(baseUrl + "users/user", requestOptions);
+    } catch (e) {
+      console.log("checkToken error: ", e.message);
+    }
+  };
+
+  const register = async (inputs) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: inputs,
+    };
+    try {
+      const response = await fetch(baseUrl + 'users', fetchOptions);
+      console.log(baseUrl + 'users', fetchOptions);
+      return await response.json();
+    } catch (e) {
+      console.log('ApiHooks register', e.message);
+      return false;
+    }
+  };
+
+  return { checkToken , register };
+};
+
+export { useMedia, useLogin, useUser };

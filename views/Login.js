@@ -3,39 +3,69 @@ import {
   StyleSheet,
   View,
   Text,
-  Button
+  Button,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import PropTypes from "prop-types";
 import { MainContext } from "../context/MainContext";
+import { useLogin, useUser } from "../hooks/ApiHooks";
+import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
-const Login = (props) => { // props is needed for navigation
+const Login = ({ navigation }) => {
+  const { setIsLoggedIn } = useContext(MainContext);
+  const { login } = useLogin();
+  const { checkToken } = useUser();
 
-  const getToken = async () => {
-    const userToken = await AsyncStorage.getItem('userToken');
-    console.log('token', userToken);
-    if (userToken === 'abc') {
+  const doLogin = async () => {
+    try {
+      const loginInfo = await login(
+        JSON.stringify({
+          username: "flander",
+          password: "Testi123!"
+        })
+      );
+      console.log("token login", loginInfo.token);
+      await AsyncStorage.setItem("userToken", loginInfo.token);
+      console.log(await AsyncStorage.getItem("userToken"));
       setIsLoggedIn(true);
-      props.navigation.navigate('Home');
+    } catch (e) {
+      console.log("doLogin error", e.message);
     }
   };
+
+  const getToken = async () => {
+    const userToken = await AsyncStorage.getItem("userToken");
+    console.log("token", userToken);
+
+    if (userToken) {
+      const userInfo = await checkToken(userToken);
+      if (userInfo.user_id) {
+        setIsLoggedIn(true);
+      }
+    }
+  };
+
   useEffect(() => {
     getToken();
   }, []);
 
-  const [isLoggedIn, setIsLoggedIn] = useContext(MainContext);
-  console.log("ili", isLoggedIn);
-
-  const logIn = async () => {
-    setIsLoggedIn(true);
-    await AsyncStorage.setItem("usertoken", "abc");
-    props.navigation.navigate("Home");
-  };
   return (
-    <View style={styles.container}>
-      <Text>Login</Text>
-      <Button title="Sign in!" onPress={logIn} />
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.keyboardView}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <LoginForm navigation={navigation} />
+          <RegisterForm navigation={navigation} />
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -45,6 +75,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center"
+  },
+
+  keyboardView: {
+    flex: 1
   }
 });
 
