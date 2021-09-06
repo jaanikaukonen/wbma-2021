@@ -13,7 +13,7 @@ const useMedia = () => {
 
   const loadMedia = async () => {
     try {
-      const mediaWithoutThumbnails = await doFetch(baseUrl + "media");
+      const mediaWithoutThumbnails = await doFetch(baseUrl + "media/");
 
       const allData = mediaWithoutThumbnails.map(async (item) => {
         return await loadSingleMedia(item.file_id);
@@ -34,7 +34,7 @@ const useMedia = () => {
     }
   };
 
-  return { loadMedia, loadSingleMedia };
+  return { mediaArray, loadMedia, loadSingleMedia };
 };
 
 const useLogin = () => {

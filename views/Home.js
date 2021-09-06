@@ -1,5 +1,5 @@
 import React from "react";
-import {  ImageBackground, SafeAreaView, StyleSheet, View } from "react-native";
+import { ImageBackground, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import PropTypes from 'prop-types';
 import List from "../components/List";
 
@@ -29,7 +29,6 @@ Home.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black"
   },
 
   headerImg: {
