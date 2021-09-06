@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleSheet, SafeAreaView, Text, Image } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
+import { Image , Text } from 'react-native-elements';
 import PropTypes from "prop-types";
 import { uploadsUrl } from "../utils/variables";
 import { format } from "date-fns";
@@ -9,12 +10,12 @@ const Single = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        style={{width: 200, height: 200}}
+        style={{width: window.innerWidth, height: 400}}
         source={{uri: uploadsUrl + params.filename}}
       />
-      <Text>{params.title}</Text>
-      <Text>{params.description}</Text>
-      <Text>{format(new Date(params.time_added), 'EEEE dd MMMM yyyy')}</Text>
+      <Text h1>{params.title}</Text>
+      <Text h4>{params.description}</Text>
+      <Text h5>{format(new Date(params.time_added), 'EEEE dd MMMM yyyy')}</Text>
     </SafeAreaView>
   );
 };
@@ -27,8 +28,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
     paddingTop: 40
   }
 });

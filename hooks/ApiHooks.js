@@ -37,16 +37,17 @@ const useMedia = () => {
   return { mediaArray, loadMedia, loadSingleMedia };
 };
 
+
 const useLogin = () => {
   const login = async (userCredentials) => {
     const requestOptions = {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: userCredentials,
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: userCredentials
     };
     try {
-      return await doFetch(baseUrl + 'login', requestOptions);
+      return await doFetch(baseUrl + "login", requestOptions);
     } catch (e) {
       console.log("Login error", e.message);
     }
@@ -70,23 +71,35 @@ const useUser = () => {
 
   const register = async (inputs) => {
     const fetchOptions = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
-      body: inputs,
+      body: inputs
     };
     try {
-      const response = await fetch(baseUrl + 'users', fetchOptions);
-      console.log(baseUrl + 'users', fetchOptions);
+      const response = await fetch(baseUrl + "users", fetchOptions);
+      console.log(baseUrl + "users", fetchOptions);
       return await response.json();
     } catch (e) {
-      console.log('ApiHooks register', e.message);
+      console.log("ApiHooks register", e.message);
       return false;
     }
   };
 
-  return { checkToken , register };
+  return { checkToken, register };
 };
 
-export { useMedia, useLogin, useUser };
+const useTag = () => {
+  const getFilesByTag = async (tag) => {
+    try {
+      return await doFetch(baseUrl + "tags/" + tag);
+    } catch (e) {
+      console.log(e.message);
+      return {};
+    }
+  };
+  return { getFilesByTag };
+};
+
+export { useMedia, useLogin, useUser, useTag };

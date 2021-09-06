@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Button,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Platform,
@@ -61,7 +60,9 @@ const Login = ({ navigation }) => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
+          <Text style={styles.text}>Login</Text>
           <LoginForm navigation={navigation} />
+          <Text style={styles.text}>Register</Text>
           <RegisterForm navigation={navigation} />
         </View>
       </TouchableWithoutFeedback>
@@ -72,13 +73,19 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
   },
 
   keyboardView: {
     flex: 1
+  },
+
+  text : {
+    textAlign: 'center',
+    fontSize: 25,
+    fontWeight: '600',
+    margin: 20,
   }
 });
 
