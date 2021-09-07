@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -14,11 +14,13 @@ import { MainContext } from "../context/MainContext";
 import { useLogin, useUser } from "../hooks/ApiHooks";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
+import { Link } from "@react-navigation/native";
 
 const Login = ({ navigation }) => {
   const { setIsLoggedIn } = useContext(MainContext);
   const { login } = useLogin();
   const { checkToken } = useUser();
+  const [registerFormToggle, setRegisterFormToggle] = useState(false);
 
   const doLogin = async () => {
     try {
@@ -59,12 +61,19 @@ const Login = ({ navigation }) => {
       style={styles.keyboardView}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <Text style={styles.text}>Login</Text>
-          <LoginForm navigation={navigation} />
-          <Text style={styles.text}>Register</Text>
-          <RegisterForm navigation={navigation} />
-        </View>
+        {registerFormToggle ? (
+            <View style={styles.container}>
+              <Text style={styles.text}>Register</Text>
+              <RegisterForm navigation={navigation} />
+              <Text onPress={(e) => {setRegisterFormToggle(false)}} style={styles.link}>Login</Text>
+            </View>
+        ) : (
+          <View style={styles.container}>
+            <Text style={styles.text}>Login</Text>
+            <LoginForm navigation={navigation} />
+            <Text onPress={(e) => {setRegisterFormToggle(true)}} style={styles.link}>Register</Text>
+          </View>
+        )}
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
@@ -86,6 +95,13 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: '600',
     margin: 20,
+  },
+
+  link: {
+    marginTop: 30,
+    textDecorationLine: 'underline',
+    color: 'blue',
+    textAlign: 'center',
   }
 });
 

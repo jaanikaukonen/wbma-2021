@@ -31,7 +31,7 @@ const LoginForm = ({ navigation }) => {
     }
   };
   return (
-    <View>
+    <View style={{padding: 10}}>
       <FormTextInput
         autoCapitalize="none"
         placeholder="username"
@@ -43,7 +43,7 @@ const LoginForm = ({ navigation }) => {
         onChangeText={(txt) => handleInputChange("password", txt)}
         secureTextEntry={true}
       />
-      <Button raised title="Login!" onPress={doLogin} style={{marginBottom: 50}}/>
+      <Button raised title="Login!" onPress={doLogin} />
     </View>
   );
 };

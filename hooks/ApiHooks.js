@@ -47,7 +47,7 @@ const useLogin = () => {
       body: userCredentials
     };
     try {
-      return await doFetch(baseUrl + "login", requestOptions);
+      return await await doFetch(baseUrl + "login", requestOptions);
     } catch (e) {
       console.log("Login error", e.message);
     }
@@ -69,6 +69,15 @@ const useUser = () => {
     }
   };
 
+  const checkIfUsernameIsAvailable = async (username) => {
+    try {
+      const usernameInfo = await doFetch(baseUrl + "users/username/" + username);
+      return usernameInfo.available;
+    } catch (e) {
+      console.log("checkUsername error: ", e.message);
+    }
+  };
+
   const register = async (inputs) => {
     const fetchOptions = {
       method: "POST",
@@ -87,7 +96,7 @@ const useUser = () => {
     }
   };
 
-  return { checkToken, register };
+  return { checkToken, register, checkIfUsernameIsAvailable };
 };
 
 const useTag = () => {

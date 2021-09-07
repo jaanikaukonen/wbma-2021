@@ -7,7 +7,7 @@ import useSignUpForm from '../hooks/RegisterHooks';
 import {useUser} from '../hooks/ApiHooks';
 
 const RegisterForm = ({navigation}) => {
-  const {inputs, handleInputChange} = useSignUpForm();
+  const {inputs, registerErrors, handleInputChange, checkUsername} = useSignUpForm();
   const {register} = useUser();
   const doRegister = async () => {
     const serverResponse = await register(
@@ -25,11 +25,15 @@ const RegisterForm = ({navigation}) => {
     }
   };
   return (
-    <View>
+    <View style={{padding: 10}}>
       <FormTextInput
         autoCapitalize="none"
         placeholder="username"
         onChangeText={(txt) => handleInputChange('username', txt)}
+        onEndEditing={(evt) => {
+          const availability = checkUsername(evt.nativeEvent.text);
+        }}
+        errorMessage={registerErrors.username}
       />
       <FormTextInput
         autoCapitalize="none"
