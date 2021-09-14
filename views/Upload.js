@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { View, Platform } from "react-native";
+import { View, Platform, ActivityIndicator } from "react-native";
 import UploadForm from "../components/UploadForm";
 import { Button, Image } from "react-native-elements";
 import useUploadForm from "../hooks/UploadHooks";
@@ -8,11 +8,11 @@ import * as ImagePicker from "expo-image-picker";
 import { useMedia } from "../hooks/ApiHooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Upload = (props) => {
+const Upload = ({ navigation }) => {
   const { inputs, handleInputChange } = useUploadForm();
   const [image, setImage] = useState(require("../assets/icon.png"));
   const [type, setType] = useState("");
-  const { uploadMedia } = useMedia();
+  const { uploadMedia, loading } = useMedia();
 
   const doUpload = async () => {
     const filename = image.uri.split("/").pop();
@@ -20,8 +20,16 @@ const Upload = (props) => {
     formData.append("file", { uri: image.uri, name: filename, type });
     formData.append("title", inputs.title);
     formData.append("description", inputs.description);
-    const userToken = await AsyncStorage.getItem("userToken");
-    uploadMedia(formData, userToken);
+    try {
+      const userToken = await AsyncStorage.getItem("userToken");
+      const result = await uploadMedia(formData, userToken);
+      console.log('doUpload', result);
+      if (result) {
+        navigation.navigate('Home');
+      }
+    } catch (e) {
+      console.log("doUpload error", e.message);
+    }
   };
 
   useEffect(() => {
@@ -56,12 +64,19 @@ const Upload = (props) => {
       <Image
         source={image}
         style={{ width: 400, height: 200 }} />
-      <Button title="Select media" onPress={pickImage} />
-      <UploadForm title="Upload" handleSubmit={doUpload} handleInputChange={handleInputChange} />
+      <Button title="Select media" onPress={pickImage} loading={loading} />
+      <UploadForm
+        title="Upload"
+        handleSubmit={doUpload}
+        handleInputChange={handleInputChange}
+      />
+      {loading && <ActivityIndicator />}
     </View>
   );
 };
 
-Upload.propTypes = {};
+Upload.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default Upload;
