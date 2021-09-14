@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { baseUrl } from "../utils/variables";
+import { appID, baseUrl } from "../utils/variables";
 import { doFetch } from "../utils/http";
 import axios from "axios";
 
@@ -16,7 +16,7 @@ const useMedia = () => {
 
   const loadMedia = async () => {
     try {
-      const mediaWithoutThumbnails = await doFetch(baseUrl + "media/");
+      const mediaWithoutThumbnails = await doFetch(baseUrl + "tags/" + appID);
 
       const allData = mediaWithoutThumbnails.map(async (item) => {
         return await loadSingleMedia(item.file_id);
@@ -132,7 +132,23 @@ const useTag = () => {
       return {};
     }
   };
-  return { getFilesByTag };
+
+  const addTag = async (file_id, tag, token) => {
+    const options = {
+      method: 'POST',
+      headers: {'x-access-token': token, "Content-Type": "application/json"},
+      body: JSON.stringify({file_id, tag}),
+    }
+
+    try {
+      const tagInfo = await doFetch(baseUrl + 'tags', options)
+      return tagInfo
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+
+  return { getFilesByTag, addTag };
 };
 
 export { useMedia, useLogin, useUser, useTag };
