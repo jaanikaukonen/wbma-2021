@@ -1,6 +1,6 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PropTypes from "prop-types";
-import { View, Platform, ActivityIndicator } from "react-native";
+import { View, Platform, ActivityIndicator, Alert } from "react-native";
 import UploadForm from "../components/UploadForm";
 import { Button, Image } from "react-native-elements";
 import useUploadForm from "../hooks/UploadHooks";
@@ -8,6 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useMedia, useTag } from "../hooks/ApiHooks";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { appID } from "../utils/variables";
+import { MainContext } from '../context/MainContext'
 
 const Upload = ({ navigation }) => {
   const { inputs, handleInputChange } = useUploadForm();
@@ -15,9 +16,13 @@ const Upload = ({ navigation }) => {
   const [type, setType] = useState("");
   const { uploadMedia, loading } = useMedia();
   const { addTag } = useTag();
+  const {update, setUpdate} = useContext(MainContext);
 
   const doUpload = async () => {
     const filename = image.uri.split("/").pop();
+    const match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    if (type === 'image/jpg') type = 'image/jpeg';
     const formData = new FormData();
     formData.append("file", { uri: image.uri, name: filename, type });
     formData.append("title", inputs.title);
@@ -30,7 +35,20 @@ const Upload = ({ navigation }) => {
       const tagResult = await addTag(result.file_id, appID, userToken);
       console.log("doUploading", tagResult);
       if (tagResult.message) {
-        navigation.navigate("Home");
+        Alert.alert(
+          'Upload',
+          result.message,
+          [
+            {
+              text: 'Ok',
+              onPress: () => {
+                setUpdate(update + 1);
+                navigation.navigate('Home');
+              },
+            },
+          ],
+          {cancelable: false}
+        );
       }
     } catch (e) {
       console.log("doUpload error", e.message);

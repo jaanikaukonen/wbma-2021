@@ -14,10 +14,9 @@ import { MainContext } from "../context/MainContext";
 import { useLogin, useUser } from "../hooks/ApiHooks";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
-import { Link } from "@react-navigation/native";
 
 const Login = ({ navigation }) => {
-  const { setIsLoggedIn } = useContext(MainContext);
+  const { setIsLoggedIn, setUser } = useContext(MainContext);
   const { login } = useLogin();
   const { checkToken } = useUser();
   const [registerFormToggle, setRegisterFormToggle] = useState(false);
@@ -44,9 +43,14 @@ const Login = ({ navigation }) => {
     console.log("token", userToken);
 
     if (userToken) {
-      const userInfo = await checkToken(userToken);
-      if (userInfo.user_id) {
-        setIsLoggedIn(true);
+      try {
+        const userInfo = await checkToken(userToken);
+        if (userInfo.user_id) {
+          setUser(userInfo);
+          setIsLoggedIn(true);
+        }
+      } catch (e) {
+        console.log('getToken', e.message);
       }
     }
   };
