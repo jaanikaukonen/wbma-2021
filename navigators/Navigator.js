@@ -8,6 +8,7 @@ import Single from "../views/Single";
 import Login from "../views/Login";
 import { MainContext } from "../context/MainContext";
 import Upload from "../views/Upload";
+import MyFiles from "../views/MyFiles";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,14 +29,18 @@ const StackScreen = () => {
     <Stack.Navigator>
       {isLoggedIn ? (
         <>
-          <Stack.Screen name="Home" component={TabScreen} />
+          <Stack.Screen
+            name="Front"
+            component={TabScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen name="Single" component={Single} />
-          <Stack.Screen name="Upload" component={Upload} />
+          <Stack.Screen name="My Files" component={MyFiles} />
         </>
       ) : (
-        <>
-          <Stack.Screen name="Login" component={Login} />
-        </>
+        <Stack.Screen name="Login" component={Login} />
       )}
     </Stack.Navigator>
   );

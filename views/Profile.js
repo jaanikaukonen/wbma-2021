@@ -7,16 +7,17 @@ import PropTypes from "prop-types";
 import { useTag } from "../hooks/ApiHooks";
 import { uploadsUrl } from "../utils/variables";
 
-const Profile = ({navigation}) => {
-  const {isLoggedIn, setIsLoggedIn, user} = useContext(MainContext);
-  const [avatar, setAvatar] = useState('https://placekitten.com/400/400');
+const Profile = ({ navigation }) => {
+  const { setIsLoggedIn, user } = useContext(MainContext);
+  const [avatar, setAvatar] = useState("https://placekitten.com/400/400");
 
   const { getFilesByTag } = useTag();
+
   useEffect(() => {
-      (async () => {
-        const file = await getFilesByTag('avatar_' + user.user_id);
-        setAvatar(uploadsUrl + file.pop().filename);
-      })();
+    (async () => {
+      const file = await getFilesByTag("avatar_" + user.user_id);
+      setAvatar(uploadsUrl + file.pop().filename);
+    })();
   }, [user]);
 
 
@@ -27,12 +28,15 @@ const Profile = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Icon name='user' type='feather'/>
+      <Icon name="user" type="feather" />
       <Text h5>Username: {user.username}</Text>
-      <Image source={{uri: avatar}} style={{ width: 400, height: 400 }}/>
+      <Image source={{ uri: avatar }} style={{ width: 400, height: 400 }} />
       <Text h5>Name: {user.full_name}</Text>
       <Text h5>Email: {user.email}</Text>
-      <Button raised title={'Logout'} onPress={logout} />
+      <Button raised title={"Logout"} onPress={logout} />
+      <Button raised title={"My Files"} onPress={() => {
+        navigation.navigate("My Files");
+      }} />
     </SafeAreaView>
   );
 };
@@ -40,10 +44,10 @@ const Profile = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    paddingTop: 40,
-  },
+    backgroundColor: "#fff",
+    alignItems: "center",
+    paddingTop: 40
+  }
 });
 
 Profile.propTypes = {

@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { appID, baseUrl } from "../utils/variables";
 import { doFetch } from "../utils/http";
-import axios from "axios";
+import { MainContext } from "../context/MainContext";
 
-const useMedia = () => {
+const useMedia = (ownFiles) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [update, setUpdate] = useState(0);
+  const {update, user} = useContext(MainContext)
 
   useEffect(() => {
     (async () => {
@@ -16,15 +16,20 @@ const useMedia = () => {
 
   const loadMedia = async () => {
     try {
-      const mediaWithoutThumbnails = await doFetch(baseUrl + "tags/" + appID);
+      let mediaWithoutThumbnails = await useTag().getFilesByTag(appID);
 
-      const allData = mediaWithoutThumbnails.map(async (item) => {
-        return await loadSingleMedia(item.file_id);
+      if (ownFiles) {
+        mediaWithoutThumbnails = mediaWithoutThumbnails.filter(
+          (item) => item.user_id === user.user_id
+        );
+      }
+
+      const allFiles = mediaWithoutThumbnails.map(async (media) => {
+        return await loadSingleMedia(media.file_id);
       });
-      return await Promise.all(allData);
-
+      return Promise.all(allFiles);
     } catch (e) {
-      console.log("loadMedia", e.message);
+      console.log('loadMedia', e.message);
     }
   };
 
@@ -41,86 +46,101 @@ const useMedia = () => {
     try {
       setLoading(true);
       const options = {
-        method: "POST",
-        headers: { "x-access-token": token },
-        data: formData
+        method: 'POST',
+        headers: {
+          'x-access-token': token,
+        },
+        body: formData,
       };
-      const result = await axios(baseUrl + "media/", options);
-      console.log("axios", result.data);
-      if (result.data) {
-        setUpdate(update + 1);
-        return result.data;
-      }
+      return await doFetch(baseUrl + 'media', options);
     } catch (e) {
+      console.log('uploadMedia error', e);
       throw new Error(e.message);
     } finally {
       setLoading(false);
     }
   };
 
-  return { mediaArray, loading, loadMedia, loadSingleMedia, uploadMedia };
+  const deleteMedia = async (id, token) => {
+    try {
+      setLoading(true);
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'x-access-token': token,
+        },
+      };
+      const result = await doFetch(baseUrl + 'media/' + id, options);
+      return result;
+    } catch (e) {
+      console.log('deleteMedia error', e);
+      throw new Error(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { mediaArray, loading, loadMedia, loadSingleMedia, uploadMedia, deleteMedia };
 };
 
 
 const useLogin = () => {
   const login = async (userCredentials) => {
     const requestOptions = {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: userCredentials
+      method: 'POST',
+      // mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(userCredentials),
     };
     try {
-      return await await doFetch(baseUrl + "login", requestOptions);
-    } catch (e) {
-      console.log("Login error", e.message);
+      return await doFetch(baseUrl + 'login', requestOptions);
+    } catch (error) {
+      console.log('login error', error.message);
     }
   };
-  return { login };
+  return {login};
 };
 
 const useUser = () => {
   const checkToken = async (token) => {
-    const requestOptions = {
-      headers: {
-        "x-access-token": token
-      }
+    const options = {
+      method: 'GET',
+      headers: {'x-access-token': token},
     };
     try {
-      return doFetch(baseUrl + "users/user", requestOptions);
-    } catch (e) {
-      console.log("checkToken error: ", e.message);
+      return await doFetch(baseUrl + 'users/user', options);
+    } catch (error) {
+      console.log('checkToken error', error);
     }
   };
 
-  const checkIfUsernameIsAvailable = async (username) => {
+  const checkUsernameAvailable = async (username) => {
     try {
-      const usernameInfo = await doFetch(baseUrl + "users/username/" + username);
+      const usernameInfo = await doFetch(
+        baseUrl + 'users/username/' + username
+      );
       return usernameInfo.available;
-    } catch (e) {
-      console.log("checkUsername error: ", e.message);
+    } catch (error) {
+      console.log('checkUsername error', error);
     }
   };
 
-  const register = async (inputs) => {
-    const fetchOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: inputs
+  const register = async (userCredentials) => {
+    // https://media.mw.metropolia.fi/wbma/docs/#api-User-PostUser
+    const requestOptions = {
+      method: 'POST',
+      // mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(userCredentials),
     };
     try {
-      const response = await fetch(baseUrl + "users", fetchOptions);
-      console.log(baseUrl + "users", fetchOptions);
-      return await response.json();
-    } catch (e) {
-      console.log("ApiHooks register", e.message);
-      return false;
+      return await doFetch(baseUrl + 'users', requestOptions);
+    } catch (error) {
+      console.log('register error', error.message);
     }
   };
 
-  return { checkToken, register, checkIfUsernameIsAvailable };
+  return {checkToken, register, checkUsernameAvailable};
 };
 
 const useTag = () => {

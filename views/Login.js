@@ -14,7 +14,6 @@ import { MainContext } from "../context/MainContext";
 import { useLogin, useUser } from "../hooks/ApiHooks";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
-import { Link } from "@react-navigation/native";
 
 const Login = ({ navigation }) => {
   const { setIsLoggedIn } = useContext(MainContext);
